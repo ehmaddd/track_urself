@@ -4,9 +4,7 @@ import './App.css';
 import Header from './components/Header';
 import Navbar from './components/Navbar';
 import DashNav from './components/DashNav';
-import Quote from './components/Quote';
 import Weather from './components/Weather';
-import Prayer from './components/Prayer';
 import Register from './Register';
 import Login from './Login';
 import FloatingSocialMenu from './components/FloatingSocialMenu';
@@ -40,9 +38,7 @@ function App() {
       {!isDashboardPath && <Navbar />}
       <Routes>
         <Route path="/" element={<Login />} />
-        <Route path="/quote" element={<Quote />} />
         <Route path="/weather" element={<Weather />} />
-        <Route path="/prayer" element={<Prayer />} />
         <Route path="/register" element={<Register />} />
         <Route path="/login" element={<Login />} />
         <Route path="/dashboard/:userId" element={<Dashboard />} />
