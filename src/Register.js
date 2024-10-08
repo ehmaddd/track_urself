@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useDispatch } from 'react-redux';
 import axios from 'axios';
 
 function Register() {
@@ -6,6 +7,8 @@ function Register() {
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [error, setError] = useState('');
+
+  const dispatch = useDispatch();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -16,21 +19,8 @@ function Register() {
       return;
     }
 
-    try {
-      await axios.post('http://localhost:5000/register', {
-        username,
-        password,
-      });
-      alert('Registration successful!');
-      setUsername('');
-      setPassword('');
-      setConfirmPassword('');
-      setError('');
-    } catch (err) {
-      console.error(err);
-      alert('Registration failed!');
-    }
-  };
+    dispatch({ type: 'REGISTER_USER', payload: { username , password } });
+  }
 
   return (
     <div className="form-container">
