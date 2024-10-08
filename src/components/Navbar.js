@@ -7,13 +7,7 @@ const Nav = () => {
     <nav className="navbar">
       <ul className="nav-ul">
         <li>
-          <Link to="/quote">Quote</Link>
-        </li>
-        <li>
           <Link to="/weather">Weather</Link>
-        </li>
-        <li>
-          <Link to="/prayer">Prayer Time</Link>
         </li>
         <li>
           <Link to="/register">Register</Link>
