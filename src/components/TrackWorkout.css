@@ -1,0 +1,65 @@
+.track-workout-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  width: 100%;
+}
+
+.workout-form {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  align-items: center;
+  border: 1px solid gainsboro;
+  background-color: gainsboro;
+  border-radius: 16px;
+  padding: 1rem;
+}
+
+.workout-form-elements {
+  display: flex;
+  flex-direction: row;
+  gap: 1.5rem;
+}
+
+.workout-form-group {
+  display: flex;
+  flex-direction: row;
+  gap: 1rem;
+}
+
+.workout-form label {
+  margin-top: 1rem;
+}
+
+.duration-input,
+.calories-input {
+  width: 5rem;
+  height: 2.5rem;
+}
+
+.workout-category {
+  height: 3rem;
+  margin-top: 0.5rem;
+}
+
+.workout-btn-submit {
+  padding: 10px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+  width: 100%;
+}
+
+.workout-btn-submit:hover {
+  background-color: #0056b3;
+}
+
+.workout-charts-container {
+  margin-top: 1rem;
+  width: 98%;
+}
