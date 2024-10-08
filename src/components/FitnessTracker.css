@@ -1,0 +1,257 @@
+/* FitnessTracker Styles */
+
+/* General layout styles */
+.fitness-tracker-container {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  padding: 20px;
+}
+
+.overview-div {
+  width: 30rem;
+}
+
+.profile-summary-container {
+  background-color: #f9f9f9;
+  border-radius: 10px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  padding: 20px;
+  width: 100%;
+  margin-top: 20px;
+}
+
+.profile-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.fitness-form {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  width: 80%;
+}
+
+.profile-form-group {
+  display: flex;
+  flex-direction: column;
+}
+
+.full-width {
+  width: 100%;
+}
+
+input[type="text"],
+input[type="number"],
+select {
+  padding: 10px;
+  font-size: 16px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+
+input[type="checkbox"] {
+  transform: scale(1.2);
+  margin-left: 10px;
+}
+
+input[type="radio"] {
+  transform: scale(1.2);
+  margin-right: 5px;
+}
+
+input[type="range"] {
+  width: 100%;
+}
+
+label {
+  font-weight: bold;
+  margin-bottom: 5px;
+}
+
+.submit-btn {
+  background-color: #4caf50;
+  color: white;
+  padding: 10px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 18px;
+}
+
+.submit-btn:hover {
+  background-color: #45a049;
+}
+
+/* Nav bar styles */
+.nav-bar {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 15px;
+  background-color: #007bff;
+}
+
+.nav-title {
+  color: white;
+  font-size: 24px;
+  font-weight: bold;
+}
+
+/* Responsive styling */
+@media (max-width: 768px) {
+  .profile-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .fitness-form {
+    width: 100%;
+  }
+}
+
+
+.radio-group {
+  display: flex;
+  gap: 20px; /* Add spacing between Male and Female options */
+}
+
+.radio-group label {
+  display: flex;
+  align-items: center;
+  gap: 5px; /* Add small gap between radio button and label */
+}
+
+/* Align checkboxes horizontally */
+.checkbox-group {
+  display: inline-flex;
+  flex-wrap: wrap; /* Ensure wrapping on smaller screens */
+  gap: 20px; /* Spacing between checkboxes */
+  margin-top: 10px;
+}
+
+.checkbox-group label {
+  display: flex;
+  align-items: center;
+  gap: 5px; /* Small gap between checkbox and label */
+}
+
+.slider-group {
+  display: flex;
+  align-items: center;
+  gap: 10px; /* Adjust spacing between values and slider */
+}
+
+/* Style for eye sight values */
+.eye-sight-value {
+  color: green; /* Change text color to green */
+  font-weight: bold; /* Optional: make the text bold for better visibility */
+}
+
+/* Additional styling for the slider itself */
+.slider-group input[type="range"] {
+  flex-grow: 1; /* Allow the slider to take up remaining space */
+  margin: 0 10px; /* Adjust margin around slider for better spacing */
+}
+
+/* Optional: To ensure sliders have a consistent look */
+.slider {
+  height: 10px; /* Adjust height of the slider */
+}
+
+.left-eye {
+  margin-top: 1.3rem;
+  margin-bottom: 1.3rem;
+}
+
+.right-eye {
+  margin-bottom: 1.3rem;
+}
+
+.bloodgroup-dd {
+  width: 98%;
+}
+
+.profile-table {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1rem; /* Adjust the gap between columns */
+}
+
+.profile-row {
+  display: contents;
+}
+
+.profile-cell {
+  border: 1px solid #ddd;
+  padding: 0.5rem;
+  background: #f9f9f9;
+}
+
+.profile-cell strong {
+  display: block;
+}
+
+.workout-container {
+  border: 1px solid gainsboro;
+  border-radius: 16px;
+  margin-left: 2rem;
+  padding: 10px;
+  background-color:thistle;
+}
+
+.last-workout-div {
+  text-align: left;
+  width: 18rem;
+  border: 1px solid gainsboro;
+  border-radius: 16px;
+  padding: 15px;
+  background-color: #ffff;
+}
+
+.last-workout-div > * {
+  display: inline-block;
+  margin-top: -10px;
+  margin-bottom: -10px;
+}
+
+.last-workout-heading {
+  margin: auto;
+  background-color: gainsboro;
+  width: 100%;
+  text-align: center;
+  padding: 5px;
+}
+
+.last-workout-div p {
+  margin-left: -15px;
+}
+
+.average-workout-div {
+  text-align: left;
+  width: 18rem;
+  border: 1px solid gainsboro;
+  border-radius: 16px;
+  padding: 15px;
+  background-color: aliceblue;
+}
+
+.average-workout-div > * {
+  display: inline-block;
+  margin-top: -10px;
+  margin-bottom: -10px;
+}
+
+.average-workout-div p {
+  margin-left: -15px;
+}
+
+.average-workout-div h5 {
+  margin: auto;
+  background-color: gainsboro;
+  width: 100%;
+  text-align: center;
+  padding: 5px;
+}
