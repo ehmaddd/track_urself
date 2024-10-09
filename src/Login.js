@@ -1,39 +1,40 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useSelector, useDispatch } from 'react-redux'; // Import useSelector to access Redux state
 import { useNavigate } from 'react-router-dom';
-import axios from 'axios';
 import './index.css';
 
 function Login() {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
+  const users = useSelector((state) => state.auth.users);
+  const loggedInUser = useSelector((state) => state.auth.loggedInUser); // Access loggedInUser from Redux state
+  const [loginError, setLoginError] = useState(''); // State for handling login errors
+
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = (e) => {
     e.preventDefault();
-    try {
-      const res = await axios.post('http://localhost:5000/login', {
-        username,
-        password,
-      });
 
-      const { userId, token } = res.data;
-
-      if (token && userId) {
-        localStorage.setItem('token', token);
-        localStorage.setItem('user', userId);
-        navigate(`/dashboard/${userId}`);
-      } else {
-        alert('Login failed!');
-      }
-    } catch (err) {
-      console.error(err);
-      alert('Login failed!');
-    }
+    // Dispatch login action with username and password
+    dispatch({ type: 'LOGIN_USER', payload: { username, password } });
   };
+
+  // Use useEffect to navigate after the Redux state updates
+  useEffect(() => {
+    if (loggedInUser) {
+      localStorage.setItem('user', loggedInUser);
+      navigate(`/dashboard/${loggedInUser}`);
+    } else if (users.error) {
+      setLoginError(users.error);
+      navigate(`/login`);
+    }
+  }, [loggedInUser, users.error, navigate]);
 
   return (
     <div className="form-container">
       <h2>Login</h2>
+      {loginError && <p className="error">{loginError}</p>} {/* Display error message if any */}
       <form onSubmit={handleSubmit}>
         <input
           type="text"
