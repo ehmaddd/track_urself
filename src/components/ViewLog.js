@@ -12,8 +12,6 @@ function ViewLog() {
   const navigate = useNavigate();
   const [moodLogs, setMoodLogs] = useState([]);
   const [filteredMoodLogs, setFilteredMoodLogs] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
 
   // State for date range filter
   const [startDate, setStartDate] = useState('');
@@ -132,7 +130,7 @@ function ViewLog() {
                       <td>{log.valence}</td>
                       <td>{log.arousal}</td>
                       <td>{log.duration} minutes</td>
-                      <td>{log.triggers}</td>
+                      <td>{log.trigger}</td>
                       <td>
                         <button 
                           className="delete-button"
