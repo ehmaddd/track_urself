@@ -56,7 +56,7 @@ function MoodTracker() {
           <DashNav />
           <div className="nav-bar">
             <h1 className="nav-title">Mood Tracker</h1>
-            {/* <MoodNav id={userId} /> */}
+            <MoodNav id={loggedInUser} />
           </div>
           {/* <MoodGrid data={moodData} /> */}
           <img src={valenceImg} class="valence-img"></img>

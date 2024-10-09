@@ -1,20 +1,19 @@
 import React, { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useSelector, useDispatch } from 'react-redux';
 
 function Signout() {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
+
+  const user = localStorage.getItem('user');
+  const loggedInUser = useSelector((state) => state.auth.loggedInUser);
 
   useEffect(() => {
-    // Clear the token from localStorage
-    localStorage.removeItem('token');
-    localStorage.removeItem('isKidneyPatient');
-    localStorage.removeItem('isHeartPatient');
-    localStorage.removeItem('isDiabetesPatient');
-    sessionStorage.clear();
-
-    // Redirect to the login page
+    dispatch({ type: 'LOGOUT_USER', payload: { user } });
+    localStorage.removeItem('user');
     navigate('/login');
-  }, [navigate]);
+  });
 
   return (
     <div>
