@@ -1,16 +1,17 @@
 import React, { useEffect, useState } from 'react';
+import { useSelector } from 'react-redux';
 import { useParams, useNavigate, Outlet } from 'react-router-dom';
 import DashNav from '../components/DashNav';
 import MoodNav from './MoodNav';
 import './ViewLog.css'; // Import the CSS file
 
 function ViewLog() {
-  const { userId } = useParams();
   const storedUserId = localStorage.getItem('user');
-  const token = localStorage.getItem('token');
+  const loggedInUser = useSelector((state) => state.auth.loggedInUser);
+  const moods = useSelector((state) => state.mood.moods[loggedInUser]);
   const navigate = useNavigate();
   const [moodLogs, setMoodLogs] = useState([]);
-  const [filteredMoodLogs, setFilteredMoodLogs] = useState([]); // New state for filtered logs
+  const [filteredMoodLogs, setFilteredMoodLogs] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
@@ -22,51 +23,14 @@ function ViewLog() {
   const [recordCount, setRecordCount] = useState(10);
 
   useEffect(() => {
-    if (!token) {
-      console.log('No token found, redirecting to login');
-      navigate('/login');
-      return;
-    }
-
-    if (userId !== storedUserId) {
-      localStorage.removeItem('token');
+    if (!loggedInUser) {
       localStorage.removeItem('user');
-      sessionStorage.clear();
       navigate('/login');
       return;
     }
-
-    const verifyToken = async () => {
-      try {
-        const response = await fetch('http://localhost:5000/verify-token', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${token}`,
-          },
-        });
-
-        if (!response.ok) {
-          throw new Error('Token validation failed');
-        }
-
-        const result = await response.json();
-        console.log('Token verification result:', result);
-        if (!result.valid) {
-          localStorage.removeItem('token');
-          navigate('/login');
-        } else {
-          fetchMoodLogs(); // Fetch all mood logs initially
-        }
-      } catch (error) {
-        console.error('Token verification failed:', error);
-        localStorage.removeItem('token');
-        navigate('/login');
-      }
-    };
-
-    verifyToken();
-  }, [token, navigate, userId, storedUserId]);
+    fetchMoodLogs();
+    setMoodLogs(moods);
+  });
 
   const formatDate = (date) => {
     const options = { year: 'numeric', month: 'long', day: 'numeric' };
@@ -74,55 +38,12 @@ function ViewLog() {
   };
 
   const deleteMoodLog = async (logId) => {
-    try {
-      const response = await fetch(`http://localhost:5000/mood-logs/${logId}`, {
-        method: 'DELETE',
-        headers: {
-          'Authorization': `Bearer ${token}`,
-        },
-      });
-
-      if (!response.ok) {
-        throw new Error('Error deleting mood log');
-      }
-
-      // Refresh the mood logs list or handle success
-      fetchMoodLogs(); // Call the function to refresh logs
-    } catch (error) {
-      console.error('Error deleting mood log:', error);
-    }
+    
   };
 
   // Function to fetch mood logs with optional date range filtering
   const fetchMoodLogs = async (startDate = '', endDate = '', limit = 10) => {
-    try {
-      let url = `http://localhost:5000/mood-logs?userId=${userId}`;
-      if (startDate) url += `&startDate=${startDate}`;
-      if (endDate) url += `&endDate=${endDate}`;
-      url += `&limit=${parseInt(limit, 10)}`; // Ensure limit is an integer
-
-      console.log('Fetching mood logs with URL:', url); // Log the URL being fetched
-
-      const response = await fetch(url, {
-        headers: {
-          'Authorization': `Bearer ${token}`,
-        },
-      });
-
-      if (!response.ok) {
-        throw new Error('Error fetching mood logs');
-      }
-
-      const data = await response.json();
-      console.log('Fetched data:', data); // Log the fetched data
-      data.sort((a, b) => new Date(b.date + ' ' + b.time) - new Date(a.date + ' ' + a.time));
-      setMoodLogs(data);
-      setLoading(false);
-    } catch (error) {
-      console.error('Error fetching mood logs:', error);
-      setError(error.message);
-      setLoading(false);
-    }
+    console.log(loggedInUser);
   };
 
   // Function to handle the date range filter
@@ -144,15 +65,10 @@ function ViewLog() {
   return (
     <>
       <DashNav />
-      {loading ? (
-        <p>Loading...</p>
-      ) : error ? (
-        <p>Error: {error}</p>
-      ) : (
         <>
           <div className="nav-bar">
             <h1 className="nav-title">View Log</h1>
-            <MoodNav id={userId} />
+            <MoodNav id={storedUserId} />
           </div>
           <Outlet />
           <div className="log-filter-container">
@@ -224,7 +140,6 @@ function ViewLog() {
             )}
           </div>
         </>
-      )}
     </>
   );
 }
