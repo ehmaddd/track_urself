@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
-// import { useParams, Link, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
+import { useSelector} from 'react-redux';
 // import FetchMoodColor from './components/FetchMoodColor';
 // import FetchFitness from './components/FetchFitness';
 // import FetchTodo from './components/FetchTodo';
@@ -9,10 +10,10 @@ import React, { useEffect, useState } from 'react';
 import './Dashboard.css';
 
 function Dashboard() {
-  // const { userId } = useParams();
-  // const token = localStorage.getItem('token');
+  const user = localStorage.getItem('user');
+  const loggedInUser = useSelector((state) => state.auth.loggedInUser);
   // const storedUserId = localStorage.getItem('user');
-  // const navigate = useNavigate();
+  const navigate = useNavigate();
   // const [loading, setLoading] = useState(true);
   
   // const today = new Date().toISOString().split('T')[0];  // Get today's date in 'YYYY-MM-DD' format
@@ -37,48 +38,13 @@ function Dashboard() {
   //   }));
   // };
 
-  // useEffect(() => {
-  //   const verifyToken = async () => {
-  //     if (!token) {
-  //       navigate('/login');
-  //       return;
-  //     }
-
-  //     if (userId !== storedUserId) {
-  //       localStorage.removeItem('token');
-  //       localStorage.removeItem('user');
-  //       sessionStorage.clear();
-  //       navigate('/login');
-  //       return;
-  //     }
-
-  //     try {
-  //       const response = await fetch('http://localhost:5000/verify-token', {
-  //         method: 'POST',
-  //         headers: {
-  //           'Content-Type': 'application/json',
-  //           'Authorization': `Bearer ${token}`,
-  //         },
-  //       });
-
-  //       if (!response.ok) {
-  //         throw new Error('Token validation failed');
-  //       }
-
-  //       const result = await response.json();
-  //       if (!result.valid) {
-  //         localStorage.removeItem('token');
-  //         navigate('/login');
-  //       } else {
-  //         sessionStorage.setItem('userId', userId);
-  //       }
-  //     } catch (error) {
-  //       localStorage.removeItem('token');
-  //       navigate('/login');
-  //     } finally {
-  //       setLoading(false);
-  //     }
-  //   };
+  useEffect(() => {
+    if (!loggedInUser) {
+      localStorage.removeItem('user');
+      navigate('/login');
+      return;
+    }
+  });
 
   //   verifyToken();
   // }, [token, navigate, userId, storedUserId]);
@@ -89,7 +55,7 @@ function Dashboard() {
 
   return (
         <>
-        <h1>Dashboard</h1>
+        <h1>{user}'s Dashboard</h1>
           {/* <DashNav />
           <p>Your Dashboard User ID: {userId}</p>
           <div className="dashboard-container">
