@@ -23,12 +23,20 @@ function ViewLog() {
   const [recordCount, setRecordCount] = useState(10);
 
   useEffect(() => {
+    const today = new Date();
+    setEndDate(today.toISOString().split('T')[0]);
+
+    const sevenDaysAgo = new Date();
+    sevenDaysAgo.setDate(today.getDate() - 7);
+    setStartDate(sevenDaysAgo.toISOString().split('T')[0]);
+  }, []);
+
+  useEffect(() => {
     if (!loggedInUser) {
       localStorage.removeItem('user');
       navigate('/login');
       return;
     }
-    fetchMoodLogs();
     setMoodLogs(moods);
   });
 
@@ -41,14 +49,16 @@ function ViewLog() {
     
   };
 
-  // Function to fetch mood logs with optional date range filtering
-  const fetchMoodLogs = async (startDate = '', endDate = '', limit = 10) => {
-    console.log(loggedInUser);
-  };
-
   // Function to handle the date range filter
   const handleFilter = () => {
-    fetchMoodLogs(startDate, endDate, recordCount);
+    const start = new Date(startDate);
+    const end = new Date(endDate);
+    const filteredLogs = moodLogs.filter((mood) => {
+      const moodDate = new Date(mood.date);
+      return moodDate >= start && moodDate <= end;
+    });
+
+    setFilteredMoodLogs(filteredLogs);
   };
 
   // Function to handle showing a specific number of records
