@@ -6,7 +6,7 @@ import { useSelector} from 'react-redux';
 // import FetchTodo from './components/FetchTodo';
 // import FetchBudget from './components/FetchBudget';
 // import FetchEvents from './components/FetchEvents';
-// import DashNav from './components/DashNav';
+import DashNav from './components/DashNav';
 import './Dashboard.css';
 
 function Dashboard() {
@@ -55,9 +55,7 @@ function Dashboard() {
 
   return (
         <>
-        <h1>{user}'s Dashboard</h1>
-          {/* <DashNav />
-          <p>Your Dashboard User ID: {userId}</p>
+          <DashNav />
           <div className="dashboard-container">
             <div className="dashboard-column">
               <div className="mood-div">
@@ -68,8 +66,8 @@ function Dashboard() {
                     <input 
                       type="date" 
                       className='mood-start-date' 
-                      value={moodDates.propStartDate}
-                      onChange={handleStartDateChange} 
+                      // value={moodDates.propStartDate}
+                      // onChange={handleStartDateChange} 
                     />
                   </div>
                   <div className="form-group">
@@ -77,31 +75,31 @@ function Dashboard() {
                     <input 
                       type="date" 
                       className='mood-end-date' 
-                      value={moodDates.propEndDate}
-                      onChange={handleEndDateChange} 
+                      // value={moodDates.propEndDate}
+                      // onChange={handleEndDateChange} 
                     />
                   </div>
                 </form>
-                <FetchMoodColor propStartDate={moodDates.propStartDate} propEndDate={moodDates.propEndDate} />
+                {/* <FetchMoodColor propStartDate={moodDates.propStartDate} propEndDate={moodDates.propEndDate} /> */}
               </div>
               <div className="fitness-div">
-                <FetchFitness />
+                {/* <FetchFitness /> */}
               </div>
             </div>
             <div>
               <div className="todo-div">
-                <FetchTodo />
+                {/* <FetchTodo /> */}
               </div>
             </div>
             <div>
               <div className="budget-div">
-                <FetchBudget />
+                {/* <FetchBudget /> */}
               </div>
               <div className="events-div">
-                <FetchEvents />
+                {/* <FetchEvents /> */}
               </div>
             </div>
-          </div> */}
+          </div>
         </>
   );
 }

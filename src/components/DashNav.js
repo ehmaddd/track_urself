@@ -1,36 +1,32 @@
 import React from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
+import { useSelector } from 'react-redux';
 import './Navbar.css';
 
 const DashNav = () => {
-  const userId = sessionStorage.getItem('userId');
-  const navigate = useNavigate();
-
-  if (!userId) {
-    navigate('/login'); // Optionally handle cases where userId is not set
-    return null;
-  }
+  const users = useSelector((state) => state.auth.users);
+  const loggedInUser = useSelector((state) => state.auth.loggedInUser);
 
   return (
     <nav className="navbar">
       <ul className="nav-ul">
         <li>
-          <Link to={`/dashboard/${userId}`}>Dashboard</Link>
+          <Link to={`/dashboard/${loggedInUser}`}>Dashboard</Link>
         </li>
         <li>
-          <Link to={`/dashboard/${userId}/mood_tracker`}>Mood</Link>
+          <Link to={`/dashboard/${loggedInUser}/mood_tracker`}>Mood</Link>
         </li>
         <li>
-          <Link to={`/dashboard/${userId}/fitness_tracker`}>Fitness</Link>
+          <Link to={`/dashboard/${loggedInUser}/fitness_tracker`}>Fitness</Link>
         </li>
         <li>
-          <Link to={`/dashboard/${userId}/todo`}>ToDoList</Link>
+          <Link to={`/dashboard/${loggedInUser}/todo`}>ToDoList</Link>
         </li>
         <li>
-          <Link to={`/dashboard/${userId}/budget`}>Budget</Link>
+          <Link to={`/dashboard/${loggedInUser}/budget`}>Budget</Link>
         </li>
         <li>
-        <Link to={`/dashboard/${userId}/events`}>Events</Link>
+        <Link to={`/dashboard/${loggedInUser}/events`}>Events</Link>
         </li>
         <li>
           <Link to="/signout" class="signout-button">Sign Out</Link>
