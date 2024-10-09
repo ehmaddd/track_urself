@@ -52,22 +52,6 @@ const MoodSummaryPage = ({ data }) => {
   return (
     <div className="chart-container">
       <div className="chart">
-        <h2>Trigger Impact on Mood</h2>
-        <Bar
-          data={barChartData}
-          options={{
-            indexAxis: 'x',
-            scales: {
-              x: { beginAtZero: true, title: { display: true, text: 'Triggers' } },
-              y: { title: { display: true, text: 'Count' } }
-            },
-            plugins: {
-              legend: { display: false }
-            }
-          }}
-        />
-      </div>
-      <div className="chart">
         <h2>Mood Distribution</h2>
         <Pie data={moodDistributionData} />
       </div>
