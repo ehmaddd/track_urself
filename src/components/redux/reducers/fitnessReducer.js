@@ -13,6 +13,23 @@ const fitnessReducer = (state = initialState, action) => {
                     profile: profileData, // Store the profile data
                 },
             };
+            case 'STORE_WORKOUT': {
+                const { userId, ...newWorkout } = action.payload;
+            
+                // Safely get the user's existing data or initialize with an empty workouts array
+                const existingUser = state[userId] || { workouts: [] };
+            
+                // Ensure existingUser.workouts is an array
+                const existingWorkouts = Array.isArray(existingUser.workouts) ? existingUser.workouts : [];
+            
+                return {
+                    ...state,
+                    [userId]: {
+                        ...existingUser,
+                        workouts: [...existingWorkouts, newWorkout], // Append the new workout
+                    },
+                };
+            }
         default:
             return state;
     }

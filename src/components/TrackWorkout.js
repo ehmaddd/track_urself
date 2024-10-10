@@ -1,14 +1,21 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
+import { useSelector, useDispatch } from 'react-redux';
 import DashNav from './DashNav';
 import FitNav from './FitNav';
 import Chart from 'react-apexcharts';
 import './TrackWorkout.css';
 
+const storeWorkout = (workout) => ({
+  type: 'STORE_WORKOUT',
+  payload: workout,
+});
+
 function TrackWorkout() {
-  const { userId } = useParams();
+  const dispatch = useDispatch();
   const storedUserId = localStorage.getItem('user');
-  const token = localStorage.getItem('token');
+  const userId = storedUserId;
+  const loggedInUser = useSelector((state) => state.auth.loggedInUser);
   const navigate = useNavigate();
 
   const [workoutData, setWorkoutData] = useState([]);
@@ -23,40 +30,16 @@ function TrackWorkout() {
   const [errorMessage, setErrorMessage] = useState('');
 
   const fetchWorkoutData = async () => {
-    try {
-      const response = await fetch(`http://localhost:5000/fetch_workout/${userId}`, {
-        headers: {
-          'Authorization': `Bearer ${token}`,
-        },
-      });
-      if (response.ok) {
-        const data = await response.json();
-        setWorkoutData(data);
-      } else {
-        console.error('Failed to fetch workout data:', await response.text());
-      }
-    } catch (error) {
-      console.error('Failed to fetch workout data:', error);
-    }
+
   };
 
   useEffect(() => {
-    if (!token) {
-      console.log('No token found, redirecting to login');
-      navigate('/login');
-      return;
-    }
-
-    if (userId !== storedUserId) {
-      localStorage.removeItem('token');
+    if (!loggedInUser) {
       localStorage.removeItem('user');
-      sessionStorage.clear();
       navigate('/login');
       return;
     }
-
-    fetchWorkoutData();
-  }, [token, navigate, userId, storedUserId]);
+  });
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -76,63 +59,41 @@ function TrackWorkout() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
-    console.log('Form Data:', formData); // Debugging statement
   
     // Create the request body
     const requestBody = {
-      user_id: userId,
+      userId: loggedInUser,
       date: formData.date,
       time: formData.time,
       category: formData.category,
       duration: parseFloat(formData.duration),
       cburned: parseFloat(formData.cburned),
     };
-  
-    try {
-      // Send the POST request
-      const response = await fetch('http://localhost:5000/store_workout', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`, // Correctly interpolate the token
-        },
-        body: JSON.stringify(requestBody),
-      });
-  
-      if (response.ok) {
-        // Fetch the updated workout data
-        fetchWorkoutData();
-      } else {
-        const errorResponse = await response.json();
-        console.error('Failed to record workout:', errorResponse);
-      }
-    } catch (error) {
-      console.error('Error recording workout:', error);
-    }
+
+    dispatch(storeWorkout(requestBody));
   };
 
   // Process data for charts
   const processChartData = () => {
-    // Extract dates, durations, and calories burned
-    const dates = workoutData.map(entry => new Date(entry.date).toLocaleDateString());
-    const durations = workoutData.map(entry => entry.duration || 0);
-    const caloriesBurned = workoutData.map(entry => entry.calories || 0);
+    // // Extract dates, durations, and calories burned
+    // const dates = workoutData.map(entry => new Date(entry.date).toLocaleDateString());
+    // const durations = workoutData.map(entry => entry.duration || 0);
+    // const caloriesBurned = workoutData.map(entry => entry.calories || 0);
   
-    // Process categories
-    const categoryCounts = workoutData.reduce((acc, entry) => {
-      const category = entry.type ? entry.type : 'No Category';
-      acc[category] = (acc[category] || 0) + 1;
-      return acc;
-    }, {});
+    // // Process categories
+    // const categoryCounts = workoutData.reduce((acc, entry) => {
+    //   const category = entry.type ? entry.type : 'No Category';
+    //   acc[category] = (acc[category] || 0) + 1;
+    //   return acc;
+    // }, {});
   
-    const categories = Object.keys(categoryCounts);
-    const categoryFrequencies = Object.values(categoryCounts);
+    // const categories = Object.keys(categoryCounts);
+    // const categoryFrequencies = Object.values(categoryCounts);
   
-    return { dates, durations, caloriesBurned, categories, categoryFrequencies };
+    // return { dates, durations, caloriesBurned, categories, categoryFrequencies };
   };
 
-  const chartData = processChartData();
+  // const chartData = processChartData();
 
   return (
     <>
@@ -178,7 +139,7 @@ function TrackWorkout() {
           </div>
           <button type="submit" className="workout-btn-submit">Submit</button>
         </form>
-        <div className="workout-charts-container">
+        {/* <div className="workout-charts-container">
           <h2>Workout Duration Over Time</h2>
           <div className="chart">
             <Chart
@@ -284,7 +245,7 @@ function TrackWorkout() {
               height="400px"
             />
           </div>
-        </div>
+        </div> */}
       </div>
     </>
   );
