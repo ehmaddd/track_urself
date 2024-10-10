@@ -61,7 +61,7 @@ function ViewLog() {
 
   // Function to handle showing a specific number of records
   const handleShowRecords = () => {
-    const limitedLogs = moodLogs.slice(0, recordCount); // Limit the mood logs based on recordCount
+    const limitedLogs = (moodLogs ? moodLogs.slice(0, recordCount) : null );
     setFilteredMoodLogs(limitedLogs);
   };
 
@@ -109,7 +109,7 @@ function ViewLog() {
             </div>
           </div>
           <div className="mood-logs-container">
-            {filteredMoodLogs.length > 0 ? (
+            {filteredMoodLogs && filteredMoodLogs.length > 0 ? (
               <table className="mood-logs-table">
                 <thead>
                   <tr>

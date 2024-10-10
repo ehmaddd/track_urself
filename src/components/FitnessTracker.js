@@ -63,7 +63,7 @@ function FitnessTracker() {
   };
 
   const fetchProfileData = () => {
-    if (fitnessData && fitnessData.length) {
+    if (fitnessData && fitnessData.data && fitnessData.data.length) {
       const userProfile = fitnessData.data[0];
       setFormData({
         dob: userProfile.dob || '',
@@ -147,34 +147,34 @@ function FitnessTracker() {
     <div>
       <DashNav />
       <div className="nav-bar">
-        <h1 className="nav-title">{profile ? 'Your Profile' : 'Create Your Profile'}</h1>
-        {profile && <FitNav id={loggedInUser} />}
+        <h1 className="nav-title">{fitnessData ? 'Your Profile' : 'Create Your Profile'}</h1>
+        {fitnessData && <FitNav id={loggedInUser} />}
       </div>
 
       <div className="fitness-tracker-container">
-        {profile ? (
+        {fitnessData ? (
           <div className="profile-summary-container">
             <h5>Summary</h5>
             <div className="profile-table">
               <div className="profile-row">
-                <div className="profile-cell"><strong>Age:</strong> {calculateAge(formData.dob)}</div>
-                <div className="profile-cell"><strong>Gender:</strong> {formData.gender}</div>
+                <div className="profile-cell"><strong>Age:</strong> {calculateAge(fitnessData.dob)}</div>
+                <div className="profile-cell"><strong>Gender:</strong> {fitnessData.gender}</div>
               </div>
               <div className="profile-row">
-                <div className="profile-cell"><strong>Height:</strong> {formData.height}</div>
-                <div className="profile-cell"><strong>Weight:</strong> {formData.weight}</div>
+                <div className="profile-cell"><strong>Height:</strong> {fitnessData.height}</div>
+                <div className="profile-cell"><strong>Weight:</strong> {fitnessData.weight}</div>
               </div>
               <div className="profile-row">
-                <div className="profile-cell"><strong>Blood Group:</strong> {formData.blood_group}</div>
-                <div className="profile-cell"><strong>Eye Sight:</strong> {formData.eye_sight_left}(L) - {formData.eye_sight_right}(R)</div>
+                <div className="profile-cell"><strong>Blood Group:</strong> {fitnessData.blood_group}</div>
+                <div className="profile-cell"><strong>Eye Sight:</strong> {fitnessData.eye_sight_left}(L) - {formData.eye_sight_right}(R)</div>
               </div>
               <div className="profile-row">
-                <div className="profile-cell"><strong>Disability:</strong> {formData.disability ? 'Yes' : 'No'}</div>
-                <div className="profile-cell"><strong>Diabetes:</strong> {formData.diabetes ? 'Yes' : 'No'}</div>
+                <div className="profile-cell"><strong>Disability:</strong> {fitnessData.disability ? 'Yes' : 'No'}</div>
+                <div className="profile-cell"><strong>Diabetes:</strong> {fitnessData.diabetes ? 'Yes' : 'No'}</div>
               </div>
               <div className="profile-row">
-                <div className="profile-cell"><strong>Heart Problem:</strong> {formData.heart_problem ? 'Yes' : 'No'}</div>
-                <div className="profile-cell"><strong>Kidney Issue:</strong> {formData.kidney_issue ? 'Yes' : 'No'}</div>
+                <div className="profile-cell"><strong>Heart Problem:</strong> {fitnessData.heart_problem ? 'Yes' : 'No'}</div>
+                <div className="profile-cell"><strong>Kidney Issue:</strong> {fitnessData.kidney_issue ? 'Yes' : 'No'}</div>
               </div>
             </div>
           </div>
