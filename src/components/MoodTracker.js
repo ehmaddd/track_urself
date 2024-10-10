@@ -9,7 +9,7 @@ import './Nav.css';
 
 function MoodTracker() {
   const user = localStorage.getItem('user');
-  const loggedInUser = useSelector((state) => state.auth.loggedInUser);
+  const loggedInUser = useSelector((state) => state.auth.loggedInUser) || null;
   const navigate = useNavigate();
   const [year, setYear] = useState(() => new Date().getFullYear());
   const [moodData, setMoodData] = useState([]);

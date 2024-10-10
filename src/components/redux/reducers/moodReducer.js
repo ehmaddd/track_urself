@@ -1,21 +1,21 @@
 const initialState = {
-    moods: [],
+    moods: {},
 };
 
 const moodReducer = (state = initialState, action) => {
     switch (action.type) {
         case 'LOG_MOOD': {
-            const { userId, ...mood } = action.payload;
+            const { userId, ...newMood } = action.payload;
+            
+            // Get the existing moods for the user or initialize an empty array
+            const existingMoods = state.moods[userId] || [];
             
             return {
                 ...state,
                 moods: {
                     ...state.moods,
-                    [userId]: [
-                        ...(state.moods[userId] || []),
-                        mood,
-                    ],
-                },
+                    [userId]: [...existingMoods, newMood]
+                }
             };
         }
         default:

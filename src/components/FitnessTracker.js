@@ -12,7 +12,7 @@ const storeFitness = (profile) => ({
 
 function FitnessTracker() {
   const loggedInUser = useSelector((state) => state.auth.loggedInUser);
-  const fitnessData = useSelector((state) => state.fitness[loggedInUser]);
+  const fitnessData = useSelector((state) => state.fitness[loggedInUser].profile);
   const navigate = useNavigate();
   const dispatch = useDispatch();
 

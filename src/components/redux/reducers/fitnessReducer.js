@@ -8,8 +8,9 @@ const fitnessReducer = (state = initialState, action) => {
             const { user_id, ...profile } = action.payload;
             
             return {
-                    [user_id]: 
-                        profile,
+                    [user_id] : {
+                        profile
+                    }
                 }
         }
         default:
