@@ -5,11 +5,12 @@ const initialState = {
 const fitnessReducer = (state = initialState, action) => {
     switch (action.type) {
         case 'STORE_PROFILE':
+            const { user_id, ...profile } = action.payload;
             return {
                 ...state,
-                [action.payload.user_id]: {
-                  ...state[action.payload.user_id],
-                  profile: action.payload,
+                [user_id]: {
+                  ...state[user_id],
+                  profile,
                 },
               };
             case 'STORE_WORKOUT': {
