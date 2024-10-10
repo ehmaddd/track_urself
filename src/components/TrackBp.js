@@ -1,15 +1,23 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
+import { useSelector, useDispatch } from 'react-redux';
 import DashNav from './DashNav';
 import FitNav from './FitNav';
 import Chart from 'react-apexcharts';
 import { format } from 'date-fns';
-import './TrackBp.css'; // Add a CSS file for the TrackBp styles
+import './TrackBp.css';
+
+const storeBp = (bp) => ({
+  type: 'STORE_BP',
+  payload: bp,
+});
 
 function TrackBp() {
-  const { userId } = useParams();
+  const dispatch = useDispatch();
   const storedUserId = localStorage.getItem('user');
-  const token = localStorage.getItem('token');
+  const userId = storedUserId;
+  const loggedInUser = useSelector((state) => state.auth.loggedInUser);
+  const fetchedData = useSelector((state) => state.fitness[loggedInUser]?.bp || []);
   const navigate = useNavigate();
 
   const [bpData, setBpData] = useState([]);
@@ -25,25 +33,6 @@ function TrackBp() {
     diastolic: []
   });
 
-  const fetchBpData = async () => {
-    try {
-      const response = await fetch(`http://localhost:5000/bp_levels/${userId}`, {
-        headers: {
-          'Authorization': `Bearer ${token}`,
-        },
-      });
-      if (response.ok) {
-        const data = await response.json();
-        setBpData(data);
-        processChartData(data);
-      } else {
-        console.error('Failed to fetch blood pressure data:', await response.text());
-      }
-    } catch (error) {
-      console.error('Failed to fetch blood pressure data:', error);
-    }
-  };
-
   const processChartData = (data) => {
     setChartData({
       systolic: data.map(entry => ({ date: entry.date, level: entry.systolic })),
@@ -52,22 +41,13 @@ function TrackBp() {
   };
 
   useEffect(() => {
-    if (!token) {
-      console.log('No token found, redirecting to login');
-      navigate('/login');
-      return;
-    }
-
-    if (userId !== storedUserId) {
-      localStorage.removeItem('token');
+    if (!loggedInUser) {
       localStorage.removeItem('user');
-      sessionStorage.clear();
       navigate('/login');
       return;
     }
-
-    fetchBpData();
-  }, [token, navigate, userId, storedUserId]);
+    processChartData(fetchedData);
+  }, [loggedInUser, navigate, fetchedData]);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -81,32 +61,12 @@ function TrackBp() {
     e.preventDefault();
 
     const requestBody = {
-      user_id: userId,
+      user_id: loggedInUser,
       date: formData.date,
       time: formData.time,
       systolic: parseFloat(formData.systolic),
       diastolic: parseFloat(formData.diastolic)
     };
-
-    try {
-      const response = await fetch('http://localhost:5000/record_bp', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`,
-        },
-        body: JSON.stringify(requestBody),
-      });
-
-      if (response.ok) {
-        fetchBpData(); // Refresh data after successful submission
-      } else {
-        const errorResponse = await response.json();
-        console.error('Failed to record blood pressure:', errorResponse);
-      }
-    } catch (error) {
-      console.error('Error recording blood pressure:', error);
-    }
   };
 
   return (

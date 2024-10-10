@@ -45,6 +45,22 @@ const fitnessReducer = (state = initialState, action) => {
                         sugar: [...existingSugars, newSugar], // Append the new sugar
                     },
                 };
+            };
+            case 'STORE_BP': {
+                const { user_id, ...newBp } = action.payload;
+            
+                const existingUser = state[user_id] || { bp: [] };
+            
+                // Ensure existingUser.bp is an array
+                const existingBp = Array.isArray(existingUser.bp) ? existingUser.bp : [];
+            
+                return {
+                    ...state,
+                    [user_id]: {
+                        ...existingUser,
+                        bp: [...existingBp, newBp], // Append the new bp
+                    },
+                };
             }
         default:
             return state;

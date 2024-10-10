@@ -50,10 +50,8 @@ function TrackSugar() {
       navigate('/login');
       return;
     }
-
-    // Call processChartData whenever fetchedData changes
     processChartData(fetchedData);
-  }, [loggedInUser, navigate, fetchedData]); // Add fetchedData to the dependency array
+  }, [loggedInUser, navigate, fetchedData]);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
