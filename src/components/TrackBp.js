@@ -67,6 +67,14 @@ function TrackBp() {
       systolic: parseFloat(formData.systolic),
       diastolic: parseFloat(formData.diastolic)
     };
+
+    dispatch(storeBp(requestBody));
+    setFormData({
+      date: '',
+      time: '',
+      systolic: 0,
+      diastolic: 0,
+    });
   };
 
   return (
