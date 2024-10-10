@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useParams, Link, useNavigate, Outlet } from 'react-router-dom';
+import { useNavigate, Outlet } from 'react-router-dom';
 import { useSelector} from 'react-redux';
 import DashNav from '../components/DashNav';
 import MoodNav from '../components/MoodNav';
@@ -14,26 +14,6 @@ function MoodTracker() {
   const [year, setYear] = useState(() => new Date().getFullYear());
   const [moodData, setMoodData] = useState([]);
 
-  // const fetchMoodData = async () => {
-  //   try {
-  //     const response = await fetch(`http://localhost:5000/fetch_mood_data?userId=${userId}&year=${year}`, {
-  //       method: 'GET',
-  //       headers: {
-  //         'Authorization': `Bearer ${localStorage.getItem('token')}`,
-  //         'Content-Type': 'application/json'
-  //       }
-  //     });
-  
-  //     if (!response.ok) {
-  //       throw new Error('Failed to fetch mood data');
-  //     }
-  //     return await response.json();
-  //   } catch (error) {
-  //     console.error('Error fetching mood data:', error);
-  //     throw error;
-  //   }
-  // };
-
   useEffect(() => {
     if (!loggedInUser) {
       localStorage.removeItem('user');
@@ -42,15 +22,6 @@ function MoodTracker() {
     }
   });
 
-    // const loadData = async () => {
-    //   try {
-    //     const data = await fetchMoodData();
-    //     setMoodData(data);
-    //   } catch (error) {
-    //     console.error('Error loading mood data:', error);
-    //   }
-    // };
-
   return (
         <>
           <DashNav />
@@ -58,7 +29,7 @@ function MoodTracker() {
             <h1 className="nav-title">Mood Tracker</h1>
             <MoodNav id={loggedInUser} />
           </div>
-          {/* <MoodGrid data={moodData} /> */}
+          <MoodGrid />
           <img src={valenceImg} class="valence-img"></img>
           <Outlet />
           <p>Your Mood Track User ID: {loggedInUser}</p>

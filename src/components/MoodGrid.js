@@ -1,8 +1,15 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useNavigate, Outlet } from 'react-router-dom';
+import { useSelector } from 'react-redux';
 import './MoodGrid.css';
 
-const MoodGrid = ({ data }) => {
+const MoodGrid = () => {
   const [year, setYear] = useState(new Date().getFullYear());
+  const navigate = useNavigate();
+  
+  // Fetch data from Redux store
+  const loggedInUser = useSelector((state) => state.auth.loggedInUser);
+  const data = useSelector(state => state.mood.moods[loggedInUser]) || [];
 
   const getDaysInMonth = (month) => new Date(year, month, 0).getDate();
 
@@ -21,7 +28,7 @@ const MoodGrid = ({ data }) => {
     if (moodScore <= -60 && moodScore > -80) return '#e60000'; // Very Negative
     if (moodScore <= -80 && moodScore > -100) return '#b30000'; // Extremely Negative
 
-    return '#dadada'; //Neutral
+    return '#dadada'; // Neutral
   };
 
   const generateGrid = () => {
@@ -59,7 +66,7 @@ const MoodGrid = ({ data }) => {
               className="day"
               style={{ backgroundColor: moodColor }}
             >
-              <div className="tooltip">{date} Valence : {showValence}, Arousal : {showArousal}</div>
+              <div className="tooltip">{date} Valence: {showValence}, Arousal: {showArousal}</div>
             </div>
           );
         })
@@ -77,10 +84,10 @@ const MoodGrid = ({ data }) => {
         <div key={month} className="month">
           <h3>{new Date(year, month - 1).toLocaleString('default', { month: 'long' })}</h3>
           <div className="weekdays">
-              {weekDays.map(day => (
-                <div key={day} className="weekday">{day}</div>
-              ))}
-            </div>
+            {weekDays.map(day => (
+              <div key={day} className="weekday">{day}</div>
+            ))}
+          </div>
           <div className="grid">
             {filledDays}
           </div>
