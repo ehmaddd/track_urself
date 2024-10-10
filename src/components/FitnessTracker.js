@@ -12,7 +12,7 @@ const storeFitness = (profile) => ({
 
 function FitnessTracker() {
   const loggedInUser = useSelector((state) => state.auth.loggedInUser);
-  const fitnessData = useSelector((state) => state.fitness[loggedInUser].profile);
+  // const fitnessData = useSelector((state) => state.fitness[loggedInUser].profile);
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
@@ -44,9 +44,6 @@ function FitnessTracker() {
     if (!loggedInUser) {
       localStorage.removeItem('user');
       navigate('/login');
-    } else {
-      fetchProfileData();
-      fetchWorkoutData();
     }
   }, [loggedInUser]);
 
@@ -63,54 +60,54 @@ function FitnessTracker() {
   };
 
   const fetchProfileData = () => {
-    if (fitnessData && fitnessData.length) {
-      const userProfile = fitnessData.data[0];
-      setFormData({
-        dob: userProfile.dob || '',
-        gender: userProfile.gender || '',
-        height: userProfile.height || '',
-        weight: userProfile.weight || '',
-        blood_group: userProfile.blood_group || '',
-        eye_sight_left: userProfile.eye_sight_left || 0,
-        eye_sight_right: userProfile.eye_sight_right || 0,
-        disability: userProfile.disability || false,
-        heart_problem: userProfile.heart_problem || false,
-        diabetes: userProfile.diabetes || false,
-        kidney_issue: userProfile.kidney_issue || false,
-      });
-    }
+    // if (fitnessData && fitnessData.length) {
+    //   const userProfile = fitnessData.data[0];
+    //   setFormData({
+    //     dob: userProfile.dob || '',
+    //     gender: userProfile.gender || '',
+    //     height: userProfile.height || '',
+    //     weight: userProfile.weight || '',
+    //     blood_group: userProfile.blood_group || '',
+    //     eye_sight_left: userProfile.eye_sight_left || 0,
+    //     eye_sight_right: userProfile.eye_sight_right || 0,
+    //     disability: userProfile.disability || false,
+    //     heart_problem: userProfile.heart_problem || false,
+    //     diabetes: userProfile.diabetes || false,
+    //     kidney_issue: userProfile.kidney_issue || false,
+    //   });
+    // }
   };
 
-  const fetchWorkoutData = () => {
-    // Simulated workout data fetching logic
-    const workoutData = fitnessData?.workouts || [];
-    const today = new Date();
-    const sevenDaysAgo = new Date(today);
-    sevenDaysAgo.setDate(today.getDate() - 7);
+  // const fetchWorkoutData = () => {
+  //   // Simulated workout data fetching logic
+  //   const workoutData = fitnessData?.workouts || [];
+  //   const today = new Date();
+  //   const sevenDaysAgo = new Date(today);
+  //   sevenDaysAgo.setDate(today.getDate() - 7);
 
-    const lastWeekWorkouts = workoutData.filter((workout) => {
-      const workoutDate = new Date(workout.date);
-      return workoutDate >= sevenDaysAgo && workoutDate <= today;
-    });
+  //   const lastWeekWorkouts = workoutData.filter((workout) => {
+  //     const workoutDate = new Date(workout.date);
+  //     return workoutDate >= sevenDaysAgo && workoutDate <= today;
+  //   });
 
-    const totalDuration = lastWeekWorkouts.reduce((total, workout) => total + workout.duration, 0);
-    const totalCalories = lastWeekWorkouts.reduce((total, workout) => total + workout.calories, 0);
+  //   const totalDuration = lastWeekWorkouts.reduce((total, workout) => total + workout.duration, 0);
+  //   const totalCalories = lastWeekWorkouts.reduce((total, workout) => total + workout.calories, 0);
 
-    const averageDuration = lastWeekWorkouts.length ? totalDuration / lastWeekWorkouts.length : 0;
-    const averageCalories = lastWeekWorkouts.length ? totalCalories / lastWeekWorkouts.length : 0;
+  //   const averageDuration = lastWeekWorkouts.length ? totalDuration / lastWeekWorkouts.length : 0;
+  //   const averageCalories = lastWeekWorkouts.length ? totalCalories / lastWeekWorkouts.length : 0;
 
-    if (lastWeekWorkouts.length > 0) {
-      const latestWorkout = lastWeekWorkouts[0];
-      setLastWorkout({
-        date: new Date(latestWorkout.date).toLocaleDateString(),
-        time: latestWorkout.time,
-        duration: latestWorkout.duration,
-        calories: latestWorkout.calories,
-        averageDuration,
-        averageCalories,
-      });
-    }
-  };
+  //   if (lastWeekWorkouts.length > 0) {
+  //     const latestWorkout = lastWeekWorkouts[0];
+  //     setLastWorkout({
+  //       date: new Date(latestWorkout.date).toLocaleDateString(),
+  //       time: latestWorkout.time,
+  //       duration: latestWorkout.duration,
+  //       calories: latestWorkout.calories,
+  //       averageDuration,
+  //       averageCalories,
+  //     });
+  //   }
+  // };
 
   const handleInputChange = (e) => {
     const { name, value, type, checked } = e.target;
@@ -137,7 +134,7 @@ function FitnessTracker() {
       kidney_issue: formData.kidney_issue,
     };
     dispatch(storeFitness(requestBody));
-    setProfile(fitnessData);
+    // setProfile(fitnessData);
   };
 
   return (
@@ -149,7 +146,7 @@ function FitnessTracker() {
       </div>
 
       <div className="fitness-tracker-container">
-        {profile ? (
+        {/* {profile ? ( */}
           <div className="profile-summary-container">
             <h5>Summary</h5>
             <div className="profile-table">
@@ -175,7 +172,7 @@ function FitnessTracker() {
               </div>
             </div>
           </div>
-        ) : (
+        
           <form onSubmit={handleSubmit} className="fitness-form">
             <div className="profile-form-group">
               <label>Gender:</label>
@@ -275,7 +272,7 @@ function FitnessTracker() {
               <button type="submit">Save Profile</button>
             </div>
           </form>
-        )}
+        )
 
         <div className="workout-summary">
           <h5>Last Workout</h5>
