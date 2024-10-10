@@ -6,6 +6,7 @@ import FitNav from './FitNav';
 import Chart from 'react-apexcharts';
 import './TrackWorkout.css';
 
+// Redux action to store workout data
 const storeWorkout = (workout) => ({
   type: 'STORE_WORKOUT',
   payload: workout,
@@ -16,22 +17,25 @@ function TrackWorkout() {
   const storedUserId = localStorage.getItem('user');
   const userId = storedUserId;
   const loggedInUser = useSelector((state) => state.auth.loggedInUser);
+  const fetchedData = useSelector((state) => state.fitness[loggedInUser]?.workouts || []);
   const navigate = useNavigate();
 
-  const [workoutData, setWorkoutData] = useState([]);
+  const [workoutData, setWorkoutData] = useState(fetchedData);
+  const [chartData, setChartData] = useState({
+    dates: [],
+    durations: [],
+    caloriesBurned: [],
+    categories: [],
+    categoryFrequencies: [],
+  });
   const [formData, setFormData] = useState({
     date: '',
     time: '',
     duration: '',
-    activity: '',
     category: '',
-    cburned: ''
+    cburned: '',
   });
   const [errorMessage, setErrorMessage] = useState('');
-
-  const fetchWorkoutData = async () => {
-
-  };
 
   useEffect(() => {
     if (!loggedInUser) {
@@ -39,27 +43,38 @@ function TrackWorkout() {
       navigate('/login');
       return;
     }
-  });
+  }, [loggedInUser, navigate]);
+
+  useEffect(() => {
+    setWorkoutData(fetchedData);
+    processChartData(fetchedData);
+  }, [fetchedData]);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    setFormData({
-      ...formData,
+    setFormData((prevData) => ({
+      ...prevData,
       [name]: value,
-    });
+    }));
   };
 
   const checkDuplicate = () => {
-    return workoutData.some(workout => 
+    return workoutData.some((workout) => 
       workout.date === formData.date && 
       workout.time === formData.time && 
-      workout.activity === formData.activity
+      workout.category === formData.category
     );
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-  
+
+    // Check for duplicate entry
+    if (checkDuplicate()) {
+      setErrorMessage('This workout entry already exists.');
+      return;
+    }
+
     // Create the request body
     const requestBody = {
       userId: loggedInUser,
@@ -71,29 +86,35 @@ function TrackWorkout() {
     };
 
     dispatch(storeWorkout(requestBody));
+    setFormData({
+      date: '',
+      time: '',
+      duration: '',
+      category: '',
+      cburned: '',
+    });
+    setErrorMessage('');
   };
 
   // Process data for charts
-  const processChartData = () => {
-    // // Extract dates, durations, and calories burned
-    // const dates = workoutData.map(entry => new Date(entry.date).toLocaleDateString());
-    // const durations = workoutData.map(entry => entry.duration || 0);
-    // const caloriesBurned = workoutData.map(entry => entry.calories || 0);
-  
-    // // Process categories
-    // const categoryCounts = workoutData.reduce((acc, entry) => {
-    //   const category = entry.type ? entry.type : 'No Category';
-    //   acc[category] = (acc[category] || 0) + 1;
-    //   return acc;
-    // }, {});
-  
-    // const categories = Object.keys(categoryCounts);
-    // const categoryFrequencies = Object.values(categoryCounts);
-  
-    // return { dates, durations, caloriesBurned, categories, categoryFrequencies };
-  };
+  const processChartData = (data) => {
+    // Extract dates, durations, and calories burned
+    const dates = data.map((entry) => new Date(entry.date).toLocaleDateString());
+    const durations = data.map((entry) => entry.duration || 0);
+    const caloriesBurned = data.map((entry) => entry.cburned || 0);
 
-  // const chartData = processChartData();
+    // Process categories
+    const categoryCounts = data.reduce((acc, entry) => {
+      const category = entry.category || 'No Category';
+      acc[category] = (acc[category] || 0) + 1;
+      return acc;
+    }, {});
+
+    const categories = Object.keys(categoryCounts);
+    const categoryFrequencies = Object.values(categoryCounts);
+
+    setChartData({ dates, durations, caloriesBurned, categories, categoryFrequencies });
+  };
 
   return (
     <>
@@ -108,7 +129,13 @@ function TrackWorkout() {
             {errorMessage && <p className="error-message">{errorMessage}</p>}
             <div className="workout-form-group">
               <label className="track-workout-label">Activity:</label>
-              <select name="category" className="workout-category" value={formData.category} onChange={handleInputChange} required>
+              <select 
+                name="category" 
+                className="workout-category" 
+                value={formData.category} 
+                onChange={handleInputChange} 
+                required
+              >
                 <option value="">Select Category</option>
                 <option value="Walking">Walking</option>
                 <option value="Jogging">Jogging</option>
@@ -122,24 +149,54 @@ function TrackWorkout() {
             </div>
             <div className="workout-form-group">
               <label className="track-workout-label">Duration (mins):</label>
-              <input type="number" name="duration" className="duration-input" value={formData.duration} step="1" onChange={handleInputChange} required />
+              <input 
+                type="number" 
+                name="duration" 
+                className="duration-input" 
+                value={formData.duration} 
+                step="1" 
+                onChange={handleInputChange} 
+                required 
+              />
             </div>
             <div className="workout-form-group">
               <label className="track-workout-label">Burned Calories:</label>
-              <input type="number" name="cburned" className="calories-input"  value={formData.cburned} step="1" onChange={handleInputChange} required />
+              <input 
+                type="number" 
+                name="cburned" 
+                className="calories-input"  
+                value={formData.cburned} 
+                step="1" 
+                onChange={handleInputChange} 
+                required 
+              />
             </div>
             <div className="workout-form-group">
               <label className="track-workout-label">Date:</label>
-              <input type="date" className="workout-date-input " name="date" value={formData.date} onChange={handleInputChange} required />
+              <input 
+                type="date" 
+                className="workout-date-input" 
+                name="date" 
+                value={formData.date} 
+                onChange={handleInputChange} 
+                required 
+              />
             </div>
             <div className="workout-form-group">
               <label className="track-workout-label">Time:</label>
-              <input type="time" className="workout-time-input" name="time" value={formData.time} onChange={handleInputChange} required />
+              <input 
+                type="time" 
+                className="workout-time-input" 
+                name="time" 
+                value={formData.time} 
+                onChange={handleInputChange} 
+                required 
+              />
             </div>
           </div>
           <button type="submit" className="workout-btn-submit">Submit</button>
         </form>
-        {/* <div className="workout-charts-container">
+        <div className="workout-charts-container">
           <h2>Workout Duration Over Time</h2>
           <div className="chart">
             <Chart
@@ -150,7 +207,7 @@ function TrackWorkout() {
                   id: 'duration-chart',
                 },
                 xaxis: {
-                  categories: chartData.dates || [],
+                  categories: chartData.dates,
                   title: {
                     text: 'Date',
                   },
@@ -171,12 +228,7 @@ function TrackWorkout() {
                   size: 4,
                 },
               }}
-              series={[
-                {
-                  name: 'Duration',
-                  data: chartData.durations || [],
-                },
-              ]}
+              series={[{ name: 'Duration', data: chartData.durations }]}
               width="100%"
               height="400px"
             />
@@ -191,7 +243,7 @@ function TrackWorkout() {
                   id: 'calories-chart',
                 },
                 xaxis: {
-                  categories: chartData.dates || [],
+                  categories: chartData.dates,
                   title: {
                     text: 'Date',
                   },
@@ -212,12 +264,7 @@ function TrackWorkout() {
                   size: 4,
                 },
               }}
-              series={[
-                {
-                  name: 'Calories Burned',
-                  data: chartData.caloriesBurned || [],
-                },
-              ]}
+              series={[{ name: 'Calories Burned', data: chartData.caloriesBurned }]}
               width="100%"
               height="400px"
             />
@@ -231,7 +278,7 @@ function TrackWorkout() {
                 chart: {
                   id: 'category-chart',
                 },
-                labels: chartData.categories || [],
+                labels: chartData.categories,
                 title: {
                   text: 'Workout Categories',
                   align: 'center',
@@ -240,12 +287,12 @@ function TrackWorkout() {
                   position: 'bottom',
                 },
               }}
-              series={chartData.categoryFrequencies || []}
+              series={chartData.categoryFrequencies}
               width="100%"
               height="400px"
             />
           </div>
-        </div> */}
+        </div>
       </div>
     </>
   );
