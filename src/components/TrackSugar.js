@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
 import { useParams, useNavigate } from 'react-router-dom';
 import DashNav from './DashNav';
 import FitNav from './FitNav'; // Import FitNav
@@ -6,10 +7,18 @@ import Chart from 'react-apexcharts';
 import { format } from 'date-fns';
 import './TrackSugar.css'; // Add a CSS file for the TrackSugar styles
 
+// Redux action to store workout data
+const storeSugar = (sugar) => ({
+  type: 'STORE_SUGAR',
+  payload: sugar,
+});
+
 function TrackSugar() {
-  const { userId } = useParams();
+  const dispatch = useDispatch();
   const storedUserId = localStorage.getItem('user');
-  const token = localStorage.getItem('token');
+  const userId = storedUserId;
+  const loggedInUser = useSelector((state) => state.auth.loggedInUser);
+  const fetchedData = useSelector((state) => state.fitness[loggedInUser]?.sugar || []);
   const navigate = useNavigate();
 
   const [sugarData, setSugarData] = useState([]);
@@ -25,25 +34,6 @@ function TrackSugar() {
     fasting: []
   });
 
-  const fetchSugarData = async () => {
-    try {
-      const response = await fetch(`http://localhost:5000/sugar_levels/${userId}`, {
-        headers: {
-          'Authorization': `Bearer ${token}`,
-        },
-      });
-      if (response.ok) {
-        const data = await response.json();
-        setSugarData(data);
-        processChartData(data);
-      } else {
-        console.error('Failed to fetch sugar data:', await response.text());
-      }
-    } catch (error) {
-      console.error('Failed to fetch sugar data:', error);
-    }
-  };
-
   const processChartData = (data) => {
     const randomLevels = data.filter(entry => entry.type === 'Random');
     const fastingLevels = data.filter(entry => entry.type === 'Fasting');
@@ -55,22 +45,12 @@ function TrackSugar() {
   };
 
   useEffect(() => {
-    if (!token) {
-      console.log('No token found, redirecting to login');
-      navigate('/login');
-      return;
-    }
-
-    if (userId !== storedUserId) {
-      localStorage.removeItem('token');
+    if (!loggedInUser) {
       localStorage.removeItem('user');
-      sessionStorage.clear();
       navigate('/login');
       return;
     }
-
-    fetchSugarData();
-  }, [token, navigate, userId, storedUserId]);
+  }, [loggedInUser, navigate]);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -84,32 +64,20 @@ function TrackSugar() {
     e.preventDefault();
 
     const requestBody = {
-      user_id: userId,
+      user_id: loggedInUser,
       date: formData.date,
       time: formData.time,
       type: formData.type,
       sugar_level: parseFloat(formData.sugar_level)
     };
 
-    try {
-      const response = await fetch('http://localhost:5000/record_sugar', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`,
-        },
-        body: JSON.stringify(requestBody),
-      });
-
-      if (response.ok) {
-        fetchSugarData(); // Refresh data after successful submission
-      } else {
-        const errorResponse = await response.json();
-        console.error('Failed to record sugar level:', errorResponse);
-      }
-    } catch (error) {
-      console.error('Error recording sugar level:', error);
-    }
+    dispatch(storeSugar(requestBody));
+    setFormData({
+      date: '',
+      time: '',
+      type: '',
+      sugar_level: '',
+    });
   };
 
   return (
