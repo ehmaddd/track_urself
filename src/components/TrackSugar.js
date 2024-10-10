@@ -50,7 +50,10 @@ function TrackSugar() {
       navigate('/login');
       return;
     }
-  }, [loggedInUser, navigate]);
+
+    // Call processChartData whenever fetchedData changes
+    processChartData(fetchedData);
+  }, [loggedInUser, navigate, fetchedData]); // Add fetchedData to the dependency array
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -75,7 +78,7 @@ function TrackSugar() {
     setFormData({
       date: '',
       time: '',
-      type: '',
+      type: 'Random', // Reset to default
       sugar_level: '',
     });
   };
@@ -147,12 +150,10 @@ function TrackSugar() {
                   size: 4,
                 },
               }}
-              series={[
-                {
-                  name: 'Sugar Level',
-                  data: chartData.random.map(entry => entry.level),
-                },
-              ]}
+              series={[{
+                name: 'Sugar Level',
+                data: chartData.random.map(entry => entry.level),
+              }]}
               width="100%"
               height="400px"
             />
@@ -192,12 +193,10 @@ function TrackSugar() {
                   size: 4,
                 },
               }}
-              series={[
-                {
-                  name: 'Sugar Level',
-                  data: chartData.fasting.map(entry => entry.level),
-                },
-              ]}
+              series={[{
+                name: 'Sugar Level',
+                data: chartData.fasting.map(entry => entry.level),
+              }]}
               width="100%"
               height="400px"
             />
